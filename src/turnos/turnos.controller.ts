@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { TurnosService } from './turnos.service';
 import { CreateTurnoDto } from 'src/dto/create-turno-dto';
 import { format, parse } from 'date-fns';
@@ -14,8 +14,10 @@ export class TurnosController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.turnosService.findOne(id)
+    async findOne(@Param('id') id: string) {
+        const turno = await this.turnosService.findOne(id)
+        if (!turno) throw new NotFoundException("El turno no existe")
+        return turno
     }
 
     @Post()
@@ -33,16 +35,20 @@ export class TurnosController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateTurnoDto: UpdateTurnoDto) {
+    async update(@Param('id') id: string, @Body() updateTurnoDto: UpdateTurnoDto) {
         const fecha = parse(updateTurnoDto.fecha, 'dd-mm-yyyy', new Date())
         updateTurnoDto.fecha = format(fecha, 'dd-MM-yyyy')
-        return this.turnosService.update(id, updateTurnoDto);
+        const turno = await this.turnosService.update(id, updateTurnoDto);
+        if (!turno) throw new NotFoundException("El turno no existe")
+        return turno
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string) {
-        console.log('Eliminación exitosa')
-        return this.turnosService.delete(id)
+    @HttpCode(204)
+    async delete(@Param('id') id: string) {
+        const turno = await this.turnosService.delete(id)
+        if (!turno) throw new NotFoundException("No existe este turno")
+        return turno
     }
 
 }

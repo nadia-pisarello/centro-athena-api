@@ -1,7 +1,8 @@
-import { Controller, Delete, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, NotFoundException, HttpCode } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario-dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario-dto';
+import { throwError } from 'rxjs';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -13,24 +14,37 @@ export class UsuariosController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.usuariosService.findOne(id)
+    async findOne(@Param('id') id: string) {
+        const user = await this.usuariosService.findOne(id)
+        if (!user) throw new NotFoundException("Este usuario no existe")
+        return user
     }
 
     @Post()
-    create(@Body() usuarioDto: CreateUsuarioDto) {
-        return this.usuariosService.create(usuarioDto)
+    async create(@Body() usuarioDto: CreateUsuarioDto) {
+        try {
+            return await this.usuariosService.create(usuarioDto)
+        } catch (error) {
+            if (error.code == 11000) {
+                throw new ConflictException("El usuario ya existe")
+            }
+            throw error
+        }
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-        return this.usuariosService.update(id, updateUsuarioDto)
+    async update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
+        const user = await this.usuariosService.update(id, updateUsuarioDto)
+        if (!user) throw new NotFoundException("Este usuario no existe")
+        return user
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string) {
-        console.log('Eliminación exitosa')
-        return this.usuariosService.delete(id)
+    @HttpCode(204)
+    async delete(@Param('id') id: string) {
+        const user = await this.usuariosService.delete(id)
+        if (!user) throw new NotFoundException("No existe el usuario");
+        return user
     }
 
 }

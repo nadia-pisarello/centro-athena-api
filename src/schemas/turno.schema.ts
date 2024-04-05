@@ -5,7 +5,7 @@ export type TurnoDocument = HydratedDocument<Turno>;
 
 @Schema()
 export class Turno {
-    @Prop({ required: true })
+    @Prop({ required: true, trim: true })
     nombre_paciente: string;
 
     @Prop()
