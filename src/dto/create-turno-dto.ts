@@ -1,5 +1,4 @@
-import { Type } from "class-transformer";
-import { IsString, IsDate, IsNotEmpty } from "class-validator";
+import { IsString, IsNotEmpty } from "class-validator";
 export class CreateTurnoDto {
 
     @IsString()
@@ -10,8 +9,6 @@ export class CreateTurnoDto {
     @IsNotEmpty()
     telefono?: string;
 
-    // @Type(() => Date)
-    // @IsDate()
     @IsString()
     @IsNotEmpty()
     fecha: string;
@@ -22,5 +19,12 @@ export class CreateTurnoDto {
 
     @IsString()
     @IsNotEmpty()
-    servicio?: string;
+    servicio: string;
+
+    @IsString()
+    @IsNotEmpty()
+    monto: number;
+
+    @IsString()
+    abonado?: number;
 }

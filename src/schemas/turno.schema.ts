@@ -21,6 +21,12 @@ export class Turno {
     @Prop()
     servicio: string;
 
+    @Prop()
+    monto: number;
+
+    @Prop()
+    abonado: number
+
 }
 
 export const TurnoSchema = SchemaFactory.createForClass(Turno);

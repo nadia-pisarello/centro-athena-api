@@ -21,4 +21,12 @@ export class UpdateTurnoDto {
     @IsOptional()
     @IsString()
     servicio?: string;
+
+    @IsOptional()
+    @IsString()
+    monto?: number;
+
+    @IsOptional()
+    @IsString()
+    abonado?: number;
 }
