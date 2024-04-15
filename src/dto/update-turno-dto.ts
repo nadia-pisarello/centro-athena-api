@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from "class-validator";
+import { IsString, IsOptional, IsNumber } from "class-validator";
 
 export class UpdateTurnoDto {
 
@@ -23,10 +23,10 @@ export class UpdateTurnoDto {
     servicio?: string;
 
     @IsOptional()
-    @IsString()
+    @IsNumber()
     monto?: number;
 
     @IsOptional()
-    @IsString()
+    @IsNumber()
     abonado?: number;
 }

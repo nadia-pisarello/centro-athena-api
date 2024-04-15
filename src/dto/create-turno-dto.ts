@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from "class-validator";
+import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 export class CreateTurnoDto {
 
     @IsString()
@@ -21,10 +21,11 @@ export class CreateTurnoDto {
     @IsNotEmpty()
     servicio: string;
 
-    @IsString()
-    @IsNotEmpty()
+    @IsNumber()
+    @IsOptional()
     monto: number;
 
-    @IsString()
-    abonado?: number;
+    @IsNumber()
+    @IsOptional()
+    abonado: number;
 }
