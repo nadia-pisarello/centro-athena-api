@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUsuarioDto } from 'src/dto/create-usuario-dto';
@@ -28,5 +28,22 @@ export class UsuariosService {
 
     async delete(id: string): Promise<Usuario | null> {
         return this.usuario.findByIdAndDelete(id).exec();
+    }
+
+    async findByUsernameOrEmail(usernameOrEmail: string): Promise<UsuarioDocument | null> {
+        let user = await this.usuario.findOne({
+            email: usernameOrEmail
+        }).exec();
+        if (!user) {
+            user = await this.usuario.findOne({
+                username: usernameOrEmail
+            }).exec()
+        }
+
+        if (!user) {
+            throw new NotFoundException('Usuario no encontrado');
+        }
+
+        return user;
     }
 }

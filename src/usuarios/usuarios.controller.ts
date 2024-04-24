@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, NotFoundException, HttpCode } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, NotFoundException, HttpCode, HttpException, HttpStatus } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario-dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario-dto';
@@ -45,6 +45,18 @@ export class UsuariosController {
         const user = await this.usuariosService.delete(id)
         if (!user) throw new NotFoundException("No existe el usuario");
         return user
+    }
+
+    @Post('login')
+    async login(@Body() credentials: { usernameOrEmail: string; password: string }) {
+        const { usernameOrEmail, password } = credentials;
+        const user = await this.usuariosService.findByUsernameOrEmail(usernameOrEmail);
+
+        if (!user || !user.verifyPassword(password)) {
+            throw new HttpException('Credenciales incorrectas', HttpStatus.UNAUTHORIZED);
+        }
+
+        return { message: 'Login exitoso', userId: user.id };
     }
 
 }

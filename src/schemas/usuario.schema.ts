@@ -14,6 +14,10 @@ export class Usuario {
     @Prop({ unique: true, trim: true })
     username: string;
 
+    verifyPassword(plainTextPassword: string): boolean {
+        return this.password === plainTextPassword;
+    }
+
 }
 
 export const UsuarioSchema = SchemaFactory.createForClass(Usuario);
