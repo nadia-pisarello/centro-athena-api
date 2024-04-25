@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, NotFoundException, HttpCode, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, NotFoundException, HttpCode, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario-dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario-dto';
@@ -47,16 +47,21 @@ export class UsuariosController {
         return user
     }
 
+    @HttpCode(HttpStatus.OK)
     @Post('login')
-    async login(@Body() credentials: { usernameOrEmail: string; password: string }) {
-        const { usernameOrEmail, password } = credentials;
-        const user = await this.usuariosService.findByUsernameOrEmail(usernameOrEmail);
+    async login(@Body() credenciales: { usernameOrEmail: string; userpassword: string }) {
 
-        if (!user || !user.verifyPassword(password)) {
-            throw new HttpException('Credenciales incorrectas', HttpStatus.UNAUTHORIZED);
+        const { usernameOrEmail, userpassword } = credenciales;
+        const user = await this.usuariosService.findEmailOrUsername(usernameOrEmail, userpassword);
+
+        if (!user) {
+            throw new UnauthorizedException();
         }
+        const { password, ...result } = user
+        console.log(result)
+        return result;
 
-        return { message: 'Login exitoso', userId: user.id };
+
     }
 
 }

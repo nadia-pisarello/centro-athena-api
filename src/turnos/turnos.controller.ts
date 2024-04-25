@@ -20,6 +20,15 @@ export class TurnosController {
         return turno
     }
 
+    @Get('fecha/:fecha')
+    async findByDate(@Param('fecha') fecha: string) {
+        const turnos = await this.turnosService.findByDate(fecha);
+        if (!turnos || turnos.length === 0) {
+            throw new NotFoundException("No se encontraron turnos para esta fecha");
+        }
+        return turnos;
+    }
+
     @Post()
     create(@Body() turnoDto: CreateTurnoDto) {
         const hora = parse(turnoDto.hora, 'HH:mm', new Date());

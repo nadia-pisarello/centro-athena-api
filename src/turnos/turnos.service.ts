@@ -31,4 +31,9 @@ export class TurnosService {
     async delete(id: string) {
         return this.turnoModel.findByIdAndDelete(id).exec();
     }
+
+    async findByDate(fecha: string) {
+        return this.turnoModel.find({ fecha: { $eq: fecha } }).exec();
+    }
+
 }
