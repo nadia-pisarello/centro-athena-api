@@ -45,7 +45,7 @@ export class TurnosController {
 
     @Put(':id')
     async update(@Param('id') id: string, @Body() updateTurnoDto: UpdateTurnoDto) {
-        const fecha = parse(updateTurnoDto.fecha, 'dd-mm-yyyy', new Date())
+        const fecha = parse(updateTurnoDto.fecha, 'dd-MM-yyyy', new Date())
         updateTurnoDto.fecha = format(fecha, 'dd-MM-yyyy')
         const turno = await this.turnosService.update(id, updateTurnoDto);
         if (!turno) throw new NotFoundException("El turno no existe")
