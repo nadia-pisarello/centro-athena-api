@@ -6,7 +6,6 @@ export class CreateTurnoDto {
     nombre_paciente: string;
 
     @IsString()
-    @IsNotEmpty()
     telefono?: string;
 
     @IsString()
