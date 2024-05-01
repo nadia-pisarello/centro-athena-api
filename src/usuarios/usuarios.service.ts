@@ -30,13 +30,14 @@ export class UsuariosService {
         return this.usuario.findByIdAndDelete(id).exec();
     }
 
-    async findEmailOrUsername(usernameOrEmail: string, password: string): Promise<UsuarioDocument | undefined> {
+    async findEmailOrUsername(usernameOrEmail: string, password: string): Promise<Usuario | undefined> {
         const user = await this.usuario.findOne({
             $or: [
                 { username: usernameOrEmail },
                 { email: usernameOrEmail }
             ]
         })
+
         if (!user || user.password !== password) return undefined
         return user
     }

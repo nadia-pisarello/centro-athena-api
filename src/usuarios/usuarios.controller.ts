@@ -1,10 +1,11 @@
-import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, NotFoundException, HttpCode, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, NotFoundException, HttpCode, HttpException, HttpStatus, UnauthorizedException, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario-dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario-dto';
 import { throwError } from 'rxjs';
 
 @Controller('usuarios')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsuariosController {
     constructor(private readonly usuariosService: UsuariosService) { }
 
@@ -49,17 +50,18 @@ export class UsuariosController {
 
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    async login(@Body() credenciales: { usernameOrEmail: string; userpassword: string }) {
+    async login(@Body() credenciales: { usernameOrEmail: string; password: string }) {
 
-        const { usernameOrEmail, userpassword } = credenciales;
-        const user = await this.usuariosService.findEmailOrUsername(usernameOrEmail, userpassword);
+        const { usernameOrEmail, password } = credenciales;
 
+        const user = await this.usuariosService.findEmailOrUsername(usernameOrEmail, password);
+        console.log(user)
         if (!user) {
             throw new UnauthorizedException();
         }
-        const { password, ...result } = user
-        console.log(result)
-        return result;
+        // const { password, ...result } = user
+        console.log(user)
+        return user;
 
 
     }
