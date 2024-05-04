@@ -3,11 +3,14 @@ import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario-dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario-dto';
 import { throwError } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('usuarios')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsuariosController {
-    constructor(private readonly usuariosService: UsuariosService) { }
+    constructor(private readonly usuariosService: UsuariosService,
+        private readonly jwtService: JwtService
+    ) { }
 
     @Get()
     findAll() {
@@ -53,17 +56,15 @@ export class UsuariosController {
     async login(@Body() credenciales: { usernameOrEmail: string; password: string }) {
 
         const { usernameOrEmail, password } = credenciales;
-
         const user = await this.usuariosService.findEmailOrUsername(usernameOrEmail, password);
         console.log(user)
         if (!user) {
             throw new UnauthorizedException();
         }
-        // const { password, ...result } = user
         console.log(user)
-        return user;
+        // return user;
+        const token = this.jwtService.sign({ email: user.email, username: user.username });
 
-
+        return { token };
     }
-
 }

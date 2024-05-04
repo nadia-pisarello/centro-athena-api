@@ -38,7 +38,7 @@ export class UsuariosService {
             ]
         })
 
-        if (!user || user.password !== password) return undefined
+        if (!user || user.verifyPassword) return undefined
         return user
     }
 }
