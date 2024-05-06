@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { Body, ConflictException, Controller, Delete, Get, HttpCode, InternalServerErrorException, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { TurnosService } from './turnos.service';
 import { CreateTurnoDto } from 'src/dto/create-turno-dto';
 import { format, parse } from 'date-fns';
@@ -30,17 +30,25 @@ export class TurnosController {
     }
 
     @Post()
-    create(@Body() turnoDto: CreateTurnoDto) {
-        const hora = parse(turnoDto.hora, 'HH:mm', new Date());
-        const fecha = parse(turnoDto.fecha, 'dd-MM-yyyy', new Date())
-        if (turnoDto.hora) {
-            turnoDto.hora = format(hora, "HH:mm");
+    async create(@Body() turnoDto: CreateTurnoDto) {
+        try {
+            const hora = parse(turnoDto.hora, 'HH:mm', new Date());
+            const fecha = parse(turnoDto.fecha, 'dd-MM-yyyy', new Date())
+            if (turnoDto.hora) {
+                turnoDto.hora = format(hora, "HH:mm");
+            }
+            if (turnoDto.fecha) {
+                turnoDto.fecha = format(fecha, 'dd-MM-yyyy')
+            }
+            console.log(turnoDto.hora + " " + turnoDto.fecha);
+            return await this.turnosService.create(turnoDto)
+        } catch (error) {
+            if (error.message === 'Ya existe un turno para esta fecha y hora.') {
+                throw new ConflictException('Ya existe un turno para esta fecha y hora.');
+            } else {
+                throw new InternalServerErrorException('Error al crear el turno');
+            }
         }
-        if (turnoDto.fecha) {
-            turnoDto.fecha = format(fecha, 'dd-MM-yyyy')
-        }
-        console.log(turnoDto.hora + " " + turnoDto.fecha);
-        return this.turnosService.create(turnoDto)
     }
 
     @Put(':id')

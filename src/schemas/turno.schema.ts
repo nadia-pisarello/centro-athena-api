@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
+import { Model } from "mongoose";
 
 export type TurnoDocument = HydratedDocument<Turno>;
 
@@ -10,8 +11,6 @@ export class Turno {
 
     @Prop()
     telefono: string;
-
-    // @Prop({ type: Date, pattern: "dd-MM-yyyyy", required: true })
     @Prop({ required: true })
     fecha: string;
 
@@ -30,3 +29,16 @@ export class Turno {
 }
 
 export const TurnoSchema = SchemaFactory.createForClass(Turno);
+
+TurnoSchema.pre('save', async function (next) {
+    const turno = this;
+    const TurnoModel = this.constructor as Model<TurnoDocument>;
+    const existeTurno = await TurnoModel.findOne({ fecha: turno.fecha, hora: turno.hora });
+    if (existeTurno) {
+        const error = new Error('Ya existe un turno para esta fecha y hora.');
+        return next(error);
+    }
+    next();
+});
+
+export const TurnoModel = mongoose.model<TurnoDocument>('Turno', TurnoSchema);

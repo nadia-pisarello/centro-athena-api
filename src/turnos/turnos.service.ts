@@ -36,4 +36,8 @@ export class TurnosService {
         return this.turnoModel.find({ fecha: { $eq: fecha } }).exec();
     }
 
+    async findByDateTime(fecha: string, hora: string): Promise<Turno[]> {
+        return this.turnoModel.find({ fecha, hora }).exec();
+    }
+
 }
