@@ -1,7 +1,7 @@
-import { Body, ConflictException, Controller, Delete, Get, HttpCode, InternalServerErrorException, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Controller, Delete, Get, HttpCode, InternalServerErrorException, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { TurnosService } from './turnos.service';
 import { CreateTurnoDto } from 'src/dto/create-turno-dto';
-import { format, parse } from 'date-fns';
+import { format, isBefore, parse } from 'date-fns';
 import { UpdateTurnoDto } from 'src/dto/update-turno-dto';
 
 @Controller('turnos')
@@ -40,13 +40,27 @@ export class TurnosController {
             if (turnoDto.fecha) {
                 turnoDto.fecha = format(fecha, 'dd-MM-yyyy')
             }
+            const now = new Date();
+            if (isBefore(fecha, now)) {
+                throw new BadRequestException('No puedes crear un turno con fecha anterior a la fecha actual.');
+            }
+            const existingTurnos = await this.turnosService.findByDateTime(turnoDto.fecha, turnoDto.hora);
+            if (existingTurnos.length > 0) {
+                throw new ConflictException('Ya existe un turno para esta fecha y hora.');
+            }
+
             console.log(turnoDto.hora + " " + turnoDto.fecha);
             return await this.turnosService.create(turnoDto)
         } catch (error) {
-            if (error.message === 'Ya existe un turno para esta fecha y hora.') {
-                throw new ConflictException('Ya existe un turno para esta fecha y hora.');
+            if (error instanceof ConflictException) {
+                console.error('Ya existe un turno para esta fecha y hora')
+                throw error;
+            } else if (error instanceof BadRequestException) {
+                console.error('No puedes crear un turno con fecha anterior a la fecha actual.')
+                throw error;
             } else {
-                throw new InternalServerErrorException('Error al crear el turno');
+                console.error('Error al crear el turno:', error);
+                throw new InternalServerErrorException('Error al crear el turno.');
             }
         }
     }
