@@ -57,14 +57,10 @@ export class UsuariosController {
 
         const { usernameOrEmail, password } = credenciales;
         const user = await this.usuariosService.findEmailOrUsername(usernameOrEmail, password);
-        console.log(user)
         if (!user) {
             throw new UnauthorizedException();
         }
-        console.log(user)
-        // return user;
         const token = this.jwtService.sign({ email: user.email, username: user.username });
-
         return { token };
     }
 }

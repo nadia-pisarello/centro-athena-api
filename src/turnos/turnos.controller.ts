@@ -48,8 +48,6 @@ export class TurnosController {
             if (existingTurnos.length > 0) {
                 throw new ConflictException('Ya existe un turno para esta fecha y hora.');
             }
-
-            console.log(turnoDto.hora + " " + turnoDto.fecha);
             return await this.turnosService.create(turnoDto)
         } catch (error) {
             if (error instanceof ConflictException) {
