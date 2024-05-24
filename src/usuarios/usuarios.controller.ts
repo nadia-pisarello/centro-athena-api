@@ -2,7 +2,6 @@ import { Controller, Delete, Get, Post, Put, Body, Param, ConflictException, Not
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from 'src/dto/create-usuario-dto';
 import { UpdateUsuarioDto } from 'src/dto/update-usuario-dto';
-import { throwError } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('usuarios')

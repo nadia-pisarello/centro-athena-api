@@ -4,12 +4,13 @@ import { UsuariosService } from './usuarios.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Usuario, UsuarioSchema } from 'src/schemas/usuario.schema';
 import { JwtModule } from '@nestjs/jwt';
+import { newSecretKey } from 'src/random/randomkey';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }]),
     JwtModule.register({
-      secret: 'algotengo que poner aca',
+      secret: newSecretKey,
       signOptions: { expiresIn: '1h' }
 
     })
