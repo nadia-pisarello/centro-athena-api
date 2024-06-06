@@ -19,5 +19,4 @@ import { newSecretKey } from 'src/random/randomkey';
   providers: [UsuariosService],
   exports: [UsuariosService]
 })
-export class UsuariosModule {
-}
+export class UsuariosModule { }
