@@ -6,7 +6,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.4sheukv.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority&appName=CentroAthena`),
+    MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.4sheukv.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority&appName=CentroAthena`),
     TurnosModule,
     UsuariosModule],
 
