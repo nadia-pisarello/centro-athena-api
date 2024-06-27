@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TurnosModule } from './turnos/turnos.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const URL_CONNECT = process.env.URL_CONNECT
 
