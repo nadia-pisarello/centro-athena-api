@@ -1,27 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TurnosModule } from './turnos/turnos.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsuariosModule } from './usuarios/usuarios.module';
-import * as dotenv from 'dotenv';
-dotenv.config();
-
-const URL_CONNECT = process.env.URL_CONNECT
-
 @Module({
   imports: [
-
-    MongooseModule.forRootAsync({
-      useFactory: async () => {
-        try {
-          return {
-            uri: URL_CONNECT,
-          };
-        } catch (err) {
-          console.error('Error connecting to MongoDB ', err)
-          throw err
-        };
-      }
-    }),
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.4sheukv.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority&appName=CentroAthena`),
     TurnosModule,
     UsuariosModule],
 
