@@ -15,7 +15,6 @@ const URL_CONNECT = process.env.URL_CONNECT
         try {
           return {
             uri: URL_CONNECT,
-            useUnifiedTopology: true,
           };
         } catch (err) {
           console.error('Error connecting to MongoDB ', err)
