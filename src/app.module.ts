@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TurnosModule } from './turnos/turnos.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { TurnosModule } from './turnos/turnos.module';
 
 @Module({
   imports: [

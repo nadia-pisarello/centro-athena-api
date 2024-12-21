@@ -4,8 +4,6 @@ import { Model } from 'mongoose';
 import { CreateTurnoDto } from 'src/dto/create-turno-dto';
 import { UpdateTurnoDto } from 'src/dto/update-turno-dto';
 import { Turno, TurnoDocument } from 'src/schemas/turno.schema';
-
-
 @Injectable()
 export class TurnosService {
     constructor(@InjectModel(Turno.name) private turnoModel: Model<TurnoDocument>) { }
